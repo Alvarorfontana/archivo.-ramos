@@ -1,0 +1,67 @@
+{
+ "colecciones": [
+  {
+   "id": "patria_obrera",
+   "titulo": "Patria Obrera",
+   "tipo": "Diario",
+   "descripcion": "Colección digitalizada en PDF — aporte del equipo del archivo (Issuu).",
+   "numeros": []
+  },
+  {
+   "id": "patria_grande",
+   "titulo": "Patria Grande",
+   "tipo": "Periódico",
+   "descripcion": "Periódico de los años 90. Colección digitalizada en PDF (Issuu) + serie de Elio Noé Salcedo en abelardoramos.com.",
+   "numeros": []
+  },
+  {
+   "id": "izquierda_1955",
+   "titulo": "Izquierda (revista)",
+   "tipo": "Revista",
+   "descripcion": "Septiembre de 1955, en los días del golpe: «Milicias obreras armadas». Órgano de la resistencia inicial. Colección: pendiente.",
+   "numeros": []
+  },
+  {
+   "id": "lucha_obrera",
+   "titulo": "Lucha Obrera (semanario)",
+   "tipo": "Semanario",
+   "descripcion": "1955-1958: Ramos escribe hasta su clausura por la dictadura antiperonista. Colección: pendiente.",
+   "numeros": []
+  },
+  {
+   "id": "politica_1961",
+   "titulo": "Política (semanario)",
+   "tipo": "Semanario",
+   "descripcion": "Marzo-abril 1961, 8 números: «uno de los semanarios mejor escritos de esa época». Pre-PSIN. Colección: pendiente.",
+   "numeros": []
+  },
+  {
+   "id": "izquierda_nacional",
+   "titulo": "Izquierda Nacional (revista)",
+   "tipo": "Revista",
+   "descripcion": "1967: la que Ramos envió a Perón al exilio; origen de la carta del 29/05/1967. Colección: pendiente.",
+   "numeros": []
+  },
+  {
+   "id": "pasado_presente",
+   "titulo": "Pasado y Presente (revista)",
+   "tipo": "Revista",
+   "descripcion": "1963-1965, con John William Cooke: la historia militante hecha colección. Clausurada. PDFs en el archivo (abelardoramos.com).",
+   "numeros": []
+  },
+  {
+   "id": "marcha_uruguay",
+   "titulo": "Marcha (semanario uruguayo)",
+   "tipo": "Semanario (donde publicó)",
+   "descripcion": "Post-guerra y dictadura: la prédica antiimperialista en la prensa del exilio continental (con Línea y Amauta). Colección: pendiente.",
+   "numeros": []
+  },
+  {
+   "id": "amauta",
+   "titulo": "Amauta",
+   "tipo": "Revista (donde publicó)",
+   "descripcion": "La revista de la tradición (fundada por Mariátegui, 1926): Ramos publica en su continuidad. También la revista del Instituto Simón Rodríguez (PDF en el archivo). Colección: pendiente.",
+   "numeros": []
+  }
+ ]
+}

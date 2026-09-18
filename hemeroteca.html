@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hemeroteca · Archivo Ramos</title>
+<link rel="stylesheet" href="assets/style.css"></head><body>
+<nav class="topbar"><div class="tb-in"><nav class="tb-in"><a class="brand" href="index.html">ARCHIVO <b>RAMOS</b></a><div class="tb-search"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="gSearch" placeholder="Buscar en el archivo…" autocomplete="off"></div><div class="tb-links"><a href="tesis.html">Tesis</a><a href="notas.html">Notas</a><a href="audiovisual.html">Audiovisual</a><a href="proposito.html">Propósito</a><a href="ideas.html" class="on">Las ideas</a><a href="cronologia.html">Contexto</a><a href="trama.html">La trama</a><a href="catalogo.html">Catálogo</a><a href="obras.html">Obras</a><a href="revolucion.html">Revolución y contrarrevolución</a><a href="informes.html">Informes</a><a href="correspondencia.html">Correspondencia</a><a href="negroponte.html">Negroponte</a><a href="fuentes.html">Fuentes</a><a href="preguntas.html">Preguntas</a><a href="descargas.html">Descargas</a></div><button class="icon-btn" onclick="toggleTheme()" title="Modo oscuro/claro">◐</button></nav></div></nav>
+<section class="wrap" id="hemeroteca">
+  <p class="eyebrow">ARCHIVO · PRENSA DE LA CORRIENTE</p>
+  <h2 class="sec">Hemeroteca</h2>
+  <p class="lead">Diario <b>Patria Obrera</b> y periódico <b>Patria Grande</b>: las colecciones digitalizadas en PDF. Los números se listan automáticamente desde el manifiesto de la hemeroteca.</p>
+  <div class="warn rv" style="border:1px solid #e5c9a8;background:#fdf6e8;border-radius:12px;padding:18px 20px;font-size:13px;color:#6b5f4d">
+    <b>Carga en curso:</b> las colecciones están digitalizadas (PDF, Issuu) y en proceso de incorporación. Cada número entrará con fecha, titulares y artículos de Ramos, enlazado en «Acceso a los textos», indexado en el buscador y sumado al dataset. ¿Tenés los PDFs o el enlace? Pasalos y los catalogo.</div>
+  <p class="lead" style="margin-bottom:18px">El mapa completo: prensa <b>orgánica</b> de la corriente (siete títulos, de 1955 a los 90) y prensa <b>donde publicó</b> (Marcha, Amauta, Línea, el suplemento cultural de La Prensa, Clarín Ñ). Las colecciones marcadas «pendiente» esperan digitalización o enlace.</p>
+  <div id="hemList"></div>
+  <h2 class="sec" style="font-size:22px;margin-top:40px">Prensa verificada de la corriente</h2>
+  <div class="bibtbl rv"><table>
+  <tr><th>Publicación</th><th>Época</th><th>Qué fue</th></tr>
+  <tr><td>Izquierda (revista)</td><td>Sept. 1955</td><td>«El fusil en el hombro del obrero es la única garantía de la democracia»</td></tr>
+  <tr><td>Lucha Obrera (semanario)</td><td>1955-58</td><td>Prensa de la resistencia, clausurada por la dictadura</td></tr>
+  <tr><td>Política (semanario)</td><td>1961</td><td>8 números, «uno de los mejor escritos de la época»</td></tr>
+  <tr><td>Izquierda Nacional (revista)</td><td>1967</td><td>La que motivó la carta de Perón del 29/05/1967</td></tr>
+  <tr><td>Pasado y Presente (revista)</td><td>1963-65</td><td>Historia militante hecha colección (con Cooke)</td></tr>
+  <tr><td>Patria Grande (periódico)</td><td>Años 90</td><td>«Tenemos un ministro de finanzas, pero necesitamos uno de economía» (contra Cavallo)</td></tr>
+  </table></div>
+</section>
+<script>
+fetch('hemeroteca.json').then(function(r){return r.json()}).then(function(m){
+  var h='';
+  m.colecciones.forEach(function(c){
+    h+='<div class="card rv" style="margin-bottom:16px"><span class="tag">'+c.tipo.toUpperCase()+'</span><h3>'+c.titulo+'</h3><p>'+c.descripcion+'</p>';
+    if(c.numeros.length){
+      h+='<div class="bibtbl" style="margin-top:10px"><table><tr><th>N°</th><th>Fecha</th><th>Titulares</th><th>PDF</th></tr>';
+      c.numeros.forEach(function(n){ h+='<tr><td>'+n.numero+'</td><td>'+n.fecha+'</td><td>'+n.titulares+'</td><td><a href="'+n.pdf+'" target="_blank">leer</a></td></tr>'; });
+      h+='</table></div>';
+    } else { h+='<p style="margin-top:8px;font-size:12px;color:var(--mut)">Números en carga — la colección está digitalizada y se incorpora próximamente.</p>'; }
+    h+='</div>';
+  });
+  document.getElementById('hemList').innerHTML=h;
+});
+</script></body></html>
