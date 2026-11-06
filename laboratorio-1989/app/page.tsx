@@ -34,4 +34,4 @@ export default function Home(){
 function Stat({label,value}:{label:string;value:string|number}){return <div className="stat"><small>{label}</small><b>{value}</b></div>}
 function PanelTitle({children}:{children:ReactNode}){return <h3 className="panel-title">{children}</h3>}
 function Status({label,ok}:{label:string;ok?:boolean}){return <div className="status"><span>{label}</span><b className={ok?'ok':'pending'}>{ok?'CONECTADO':'PENDIENTE'}</b></div>}
-function Empty({children}:{children:React.ReactNode}){return <div className="empty">{children}</div>}
+function Empty({children}:{children:ReactNode}){return <div className="empty">{children}</div>}
