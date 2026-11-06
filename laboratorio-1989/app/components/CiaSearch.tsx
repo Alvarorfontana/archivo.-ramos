@@ -1,7 +1,7 @@
 'use client';
 import {useMemo,useState} from 'react';
 import type { FormEvent } from 'react';
-const collections=['A Life in Intelligence - The Richard Helms Collection','A-12 OXCART Reconnaissance Aircraft Documentation','Air America: Upholding the Airmen’s Bond','Atomic Spies: Ethel and Julius Rosenberg','Berlin Wall / Collapse of Communism in Eastern Europe','Chile Collection','Guatemala Collection','Kissinger Collection','The Bay of Pigs','The Cuban Missile Crisis','CREST 25-Year Program Archive'];
+const collections=['A Life in Intelligence - The Richard Helms Collection','A-12 OXCART Reconnaissance Aircraft Documentation','Air America: Upholding the Airmen’s Bond','An Underwater Ice Station Zebra: Recovering a Secret Spy Satellite Capsule from 16,400 feet Below the Pacific Ocean','Atomic Spies: Ethel and Julius Rosenberg'];
 const contentTypes=['Cable','Memorandum','Letter','Intelligence Report','Briefing','Telegram','Study','Photograph','Map','Other'];
 export default function CiaSearch({password}:{password:string}){
  const [terms,setTerms]=useState('Argentina AND Menem'),[collection,setCollection]=useState<string[]>([]),[title,setTitle]=useState(''),[esdn,setEsdn]=useState(''),[classification,setClassification]=useState(''),[dateMode,setDateMode]=useState('none'),[dateFrom,setDateFrom]=useState(''),[dateTo,setDateTo]=useState(''),[contentType,setContentType]=useState(''),[caseNumber,setCaseNumber]=useState(''),[copied,setCopied]=useState(false);
