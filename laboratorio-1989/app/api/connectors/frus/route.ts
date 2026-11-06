@@ -1,0 +1,3 @@
+import {NextRequest,NextResponse} from 'next/server'; import {authorize} from '@/lib/auth';
+export const runtime='nodejs';
+export async function GET(request:NextRequest){const denied=authorize(request);if(denied)return denied;try{const r=await fetch('https://history.state.gov/api/v1/catalog',{headers:{accept:'application/atom+xml,application/xml,text/xml'},cache:'no-store'});const body=await r.text();if(!r.ok)return NextResponse.json({error:'FRUS devolvió HTTP '+r.status},{status:r.status});return new NextResponse(body,{headers:{'content-type':r.headers.get('content-type')||'application/atom+xml; charset=utf-8','cache-control':'no-store'}})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:'FRUS connector error'},{status:502})}}
