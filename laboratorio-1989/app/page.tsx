@@ -1,4 +1,5 @@
 'use client';
+import type { FormEvent, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 type Doc = { id:string; title:string; document_date:string|null; country:string|null; institution:string|null; document_type:string|null; source_url:string|null; verification_status:string; abstract:string|null; archive_reference:string|null };
 type Report = { id:string; title:string; status:string; updated_at:string };
@@ -12,7 +13,7 @@ export default function Home(){
  useEffect(()=>{const p=sessionStorage.getItem('archivo1989_password');if(p){setPassword(p);setSaved(true)}},[]);
  useEffect(()=>{if(saved&&password)refresh();},[saved,password]);
  const filtered=docs.filter(d=>(d.title+' '+(d.abstract||'')+' '+(d.institution||'')).toLowerCase().includes(query.toLowerCase()));
- async function addDocument(e:React.FormEvent){e.preventDefault();setBusy(true);try{await request('/api/documents',{method:'POST',body:JSON.stringify({title,source_url:url||null,abstract:abstract||null})});setTitle('');setUrl('');setAbstract('');await refresh();setNotice('Registro documental guardado.')}catch(e){setNotice(e instanceof Error?e.message:'Error')}finally{setBusy(false)}}
+ async function addDocument(e:FormEvent){e.preventDefault();setBusy(true);try{await request('/api/documents',{method:'POST',body:JSON.stringify({title,source_url:url||null,abstract:abstract||null})});setTitle('');setUrl('');setAbstract('');await refresh();setNotice('Registro documental guardado.')}catch(e){setNotice(e instanceof Error?e.message:'Error')}finally{setBusy(false)}}
  async function runAnalysis(){setBusy(true);setAnalysis('');try{const result=await request('/api/analysis',{method:'POST',body:JSON.stringify({question,documentIds:selected})});setAnalysis(JSON.stringify(result.analysis,null,2));setNotice('Análisis guardado con referencias a los documentos seleccionados.')}catch(e){setNotice(e instanceof Error?e.message:'Error')}finally{setBusy(false)}}
  async function saveReport(){setBusy(true);try{await request('/api/reports',{method:'POST',body:JSON.stringify({title:reportTitle,body:reportBody,sourceDocumentIds:selected})});await refresh();setNotice('Informe guardado en Neon.')}catch(e){setNotice(e instanceof Error?e.message:'Error')}finally{setBusy(false)}}
  if(!saved)return <main className="login"><div className="login-card"><div className="eyebrow">ARCHIVO 1989 · ÁREA DE INVESTIGACIÓN</div><h1>Intelligence &<br/>Research Workbench</h1><p>Espacio documental privado. Ingresá la contraseña de acceso configurada por el administrador.</p><form onSubmit={e=>{e.preventDefault();sessionStorage.setItem('archivo1989_password',password);setSaved(true)}}><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Contraseña de acceso" required/><button>Ingresar al archivo</button></form><small>El acceso requiere que ARCHIVE_ACCESS_PASSWORD esté configurada en el servidor.</small></div></main>;
@@ -27,6 +28,6 @@ export default function Home(){
  <footer>ARCHIVO 1989 · Entorno privado de investigación · Los análisis generados por IA requieren revisión humana.</footer></section></main>
 }
 function Stat({label,value}:{label:string;value:string|number}){return <div className="stat"><small>{label}</small><b>{value}</b></div>}
-function PanelTitle({children}:{children:React.ReactNode}){return <h3 className="panel-title">{children}</h3>}
+function PanelTitle({children}:{children:ReactNode}){return <h3 className="panel-title">{children}</h3>}
 function Status({label,ok}:{label:string;ok?:boolean}){return <div className="status"><span>{label}</span><b className={ok?'ok':'pending'}>{ok?'CONECTADO':'PENDIENTE'}</b></div>}
 function Empty({children}:{children:React.ReactNode}){return <div className="empty">{children}</div>}
