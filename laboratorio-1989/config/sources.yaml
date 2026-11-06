@@ -1,0 +1,52 @@
+sources:
+  - id: nara
+    name: National Archives Catalog API
+    base_url: https://catalog.archives.gov/api/v2/records/search
+    auth: x-api-key
+    requires_secret: true
+    secret_env: NARA_API_KEY
+    format: json
+    status: key_required
+    usage: "No almacenar en caché ni publicar respuestas; respetar límites y atribución oficiales."
+  - id: frus
+    name: Office of the Historian FRUS Catalog API
+    base_url: https://history.state.gov/api/v1/catalog
+    auth: none
+    requires_secret: false
+    format: atom_xml_opds
+    status: public
+  - id: bush_library
+    name: George H. W. Bush Presidential Library
+    base_url: https://www.bush41library.gov/digital-research-room/finding-aid/foia/records-memcons-and-telcons-january-1989-december-1991
+    auth: none
+    requires_secret: false
+    format: html_pdf
+    status: public_catalog
+  - id: cia_reading_room
+    name: CIA Reading Room
+    base_url: https://www.cia.gov/readingroom/
+    auth: none
+    requires_secret: false
+    format: web_repository
+    status: no_public_general_api_confirmed
+  - id: mexico_sre
+    name: SRE Acervo Histórico Diplomático
+    base_url: https://portales.sre.gob.mx/acervo/nuestros-archivos
+    auth: none
+    requires_secret: false
+    format: web_catalog
+    status: no_public_general_api_confirmed
+  - id: itamaraty_concordia
+    name: Itamaraty Concórdia
+    base_url: https://aplicacao.itamaraty.gov.br/ApiConcordia/swagger/ui/index
+    auth: verify_in_swagger
+    requires_secret: false
+    format: api
+    status: documented_api
+  - id: nsarchive
+    name: National Security Archive
+    base_url: https://nsarchive.gwu.edu/
+    auth: none
+    requires_secret: false
+    format: web_repository
+    status: public_repository
