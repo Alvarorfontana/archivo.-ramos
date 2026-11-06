@@ -13,6 +13,6 @@ async function readIndicator(id:string){
 export async function GET(){
  try{
   const [gdpGrowth,inflation]=await Promise.all(indicators.map(x=>readIndicator(x.id)));
-  return NextResponse.json({source:'World Development Indicators · World Bank',updatedAt:new Date().toISOString(),gdpGrowth:{indicator:indicators[0].id,name:indicators[0].name,unit:'%',sourceUrl:gdpGrowth.url,series:gdpGrowth.series},inflation:{indicator:indicators[1].id,name:indicators[1].name,unit:'%',sourceUrl:inflation.url,series:inflation.series}});
+  return NextResponse.json({source:'World Development Indicators · World Bank',updatedAt:new Date().toISOString(),series:gdpGrowth.series,gdpGrowth:{indicator:indicators[0].id,name:indicators[0].name,unit:'%',sourceUrl:gdpGrowth.url,series:gdpGrowth.series},inflation:{indicator:indicators[1].id,name:indicators[1].name,unit:'%',sourceUrl:inflation.url,series:inflation.series}});
  }catch(e){return NextResponse.json({error:e instanceof Error?e.message:'No fue posible consultar la API del Banco Mundial.'},{status:502})}
 }
