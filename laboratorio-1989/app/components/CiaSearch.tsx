@@ -1,5 +1,6 @@
 'use client';
 import {useMemo,useState} from 'react';
+import type { FormEvent } from 'react';
 const collections=['A Life in Intelligence - The Richard Helms Collection','A-12 OXCART Reconnaissance Aircraft Documentation','Air America: Upholding the Airmen’s Bond','Atomic Spies: Ethel and Julius Rosenberg','Berlin Wall / Collapse of Communism in Eastern Europe','Chile Collection','Guatemala Collection','Kissinger Collection','The Bay of Pigs','The Cuban Missile Crisis','CREST 25-Year Program Archive'];
 const contentTypes=['Cable','Memorandum','Letter','Intelligence Report','Briefing','Telegram','Study','Photograph','Map','Other'];
 export default function CiaSearch({password}:{password:string}){
