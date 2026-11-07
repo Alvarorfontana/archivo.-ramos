@@ -1,35 +1,64 @@
 'use client';
-import {useMemo,useState} from 'react';
-import type { FormEvent } from 'react';
-const collections=['A Life in Intelligence - The Richard Helms Collection','A-12 OXCART Reconnaissance Aircraft Documentation','Air America: Upholding the Airmen’s Bond','An Underwater Ice Station Zebra: Recovering a Secret Spy Satellite Capsule from 16,400 feet Below the Pacific Ocean','Atomic Spies: Ethel and Julius Rosenberg'];
-const contentTypes=['Cable','Memorandum','Letter','Intelligence Report','Briefing','Telegram','Study','Photograph','Map','Other'];
-export default function CiaSearch(){
- const [terms,setTerms]=useState('Argentina AND Menem'),[collection,setCollection]=useState<string[]>([]),[title,setTitle]=useState(''),[esdn,setEsdn]=useState(''),[classification,setClassification]=useState(''),[dateMode,setDateMode]=useState('none'),[dateFrom,setDateFrom]=useState(''),[dateTo,setDateTo]=useState(''),[contentType,setContentType]=useState(''),[caseNumber,setCaseNumber]=useState(''),[copied,setCopied]=useState(false);
-const [docTitle,setDocTitle]=useState(''),[docUrl,setDocUrl]=useState(''),[docEsdn,setDocEsdn]=useState(''),[docDate,setDocDate]=useState(''),[docClass,setDocClass]=useState(''),[docType,setDocType]=useState(''),[docCase,setDocCase]=useState(''),[docCollection,setDocCollection]=useState(''),[docAbstract,setDocAbstract]=useState(''),[importStatus,setImportStatus]=useState(''),[importBusy,setImportBusy]=useState(false);
- async function importDocument(e:FormEvent){e.preventDefault();setImportBusy(true);setImportStatus('');try{const response=await fetch('/api/cia/import',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({title:docTitle,source_url:docUrl,esdn:docEsdn,publication_date:docDate,original_classification:docClass,content_type:docType,case_number:docCase,collection:docCollection,abstract:docAbstract})});const data=await response.json();if(!response.ok)throw new Error(data.error||'No se pudo guardar');setImportStatus('Documento incorporado al Centro de archivo con estado “sin revisar”.');setDocTitle('');setDocUrl('');setDocEsdn('');setDocDate('');setDocClass('');setDocType('');setDocCase('');setDocCollection('');setDocAbstract('');}catch(error){setImportStatus(error instanceof Error?error.message:'Error de importación');}finally{setImportBusy(false)}}
- const searchUrl=terms.trim()?'https://www.cia.gov/readingroom/search/site/'+encodeURIComponent(terms.trim()):'https://www.cia.gov/readingroom/search/site';
- const brief=useMemo(()=>['CIA ELECTRONIC READING ROOM · FICHA DE BÚSQUEDA','Términos de texto completo: '+(terms||'No especificados'),'Colecciones: '+(collection.join('; ')||'Sin restricción de colección'),'Título: '+(title||'—'),'Número / ESDN: '+(esdn||'—'),'Clasificación original: '+(classification||'—'),'Fecha: '+(dateMode==='range'?(dateFrom||'inicio abierto')+' a '+(dateTo||'fin abierto'):dateMode==='exact'?dateFrom:'Sin restricción'),'Tipo de contenido: '+(contentType||'—'),'Número de caso: '+(caseNumber||'—'),'Nota: la URL abre la búsqueda textual oficial. Los demás filtros deben aplicarse en Advanced Search de CIA; no se transmiten automáticamente desde esta ficha.'].join('\n'),[terms,collection,title,esdn,classification,dateMode,dateFrom,dateTo,contentType,caseNumber]);
- async function copyBrief(){try{await navigator.clipboard.writeText(brief);setCopied(true)}catch{setCopied(false)}}
- return <div className="panel cia-panel"><div className="cia-header"><div><span className="eyebrow">FUENTE PRIMARIA · CENTRAL INTELLIGENCE AGENCY</span><h3 className="panel-title">CIA Electronic Reading Room</h3><p className="muted">Búsqueda avanzada basada en los ocho campos del manual oficial. La consulta textual se abre en el sitio de la CIA; los metadatos restantes quedan organizados en una ficha para aplicar en Advanced Search.</p></div><div className="cia-seal">CIA<br/><small>FOIA</small></div></div>
- <div className="cia-grid">
- <label className="cia-field full">Search Term(s) · Texto completo<input value={terms} onChange={e=>setTerms(e.target.value)} placeholder="Ej.: Argentina AND Menem"/><small>Admite frases y operadores de búsqueda del catálogo.</small></label>
- <label className="cia-field full">Collection(s) · Colecciones<select multiple value={collection} onChange={e=>setCollection(Array.from(e.target.selectedOptions,o=>o.value))}>{collections.map(c=><option key={c} value={c}>{c}</option>)}</select><small>Podés seleccionar varias con Ctrl. Restringir por colección puede excluir documentos sin colección asignada.</small></label>
- <label className="cia-field">Document Title<input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Palabras del título"/></label>
- <label className="cia-field">Document Number / ESDN<input value={esdn} onChange={e=>setEsdn(e.target.value)} placeholder="CIA-RDP..."/></label>
- <label className="cia-field">Original Classification<select value={classification} onChange={e=>setClassification(e.target.value)}><option value="">Cualquiera</option><option value="T">Top Secret (T)</option><option value="S">Secret (S)</option><option value="C">Confidential (C)</option><option value="R">Restricted (R)</option><option value="U">Unclassified (U)</option><option value="K">Unknown (K)</option></select></label>
- <label className="cia-field">Content Type<select value={contentType} onChange={e=>setContentType(e.target.value)}><option value="">Cualquiera</option>{contentTypes.map(x=><option key={x}>{x}</option>)}</select></label>
- <label className="cia-field">Publication Date<select value={dateMode} onChange={e=>setDateMode(e.target.value)}><option value="none">Sin filtro</option><option value="exact">Fecha exacta</option><option value="range">Intervalo</option></select>{dateMode!=='none'&&<input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)}/>}{dateMode==='range'&&<input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)}/>}</label>
- <label className="cia-field">Case Number<input value={caseNumber} onChange={e=>setCaseNumber(e.target.value)} placeholder="Número de expediente FOIA"/></label></div>
- <div className="cia-actions"><a className="cia-submit" href={searchUrl} target="_blank" rel="noreferrer">Buscar texto en CIA ↗</a><a className="cia-secondary" href="https://www.cia.gov/readingroom/" target="_blank" rel="noreferrer">Abrir Advanced Search oficial ↗</a><button className="outline" onClick={copyBrief}>{copied?'Ficha copiada':'Copiar ficha de filtros'}</button></div>
- <div className="cia-disclaimer">Esta herramienta no simula resultados ni extrae documentos por scraping. La búsqueda textual se ejecuta en cia.gov; para aplicar correctamente los filtros de metadatos, completalos en el formulario oficial. Los documentos se incorporan al archivo sólo después de verificar su ficha original.</div>
+import { useMemo, useState, type FormEvent } from 'react';
 
- <div className="cia-import"><div className="eyebrow">INCORPORACIÓN AL ARCHIVO PROPIO</div><h4>Registrar documento CIA verificado</h4><p className="muted">Copiá los datos desde la ficha oficial. Se conserva el enlace de origen; los metadatos quedan pendientes de revisión y no se descarga ni modifica el PDF original.</p>
- <form className="cia-grid" onSubmit={importDocument}>
- <label className="cia-field full">Document Title<input required value={docTitle} onChange={e=>setDocTitle(e.target.value)} placeholder="Título exacto de la ficha CIA"/></label>
- <label className="cia-field full">URL del documento original<input required type="url" value={docUrl} onChange={e=>setDocUrl(e.target.value)} placeholder="https://www.cia.gov/readingroom/document/..."/></label>
- <label className="cia-field">Document Number / ESDN<input value={docEsdn} onChange={e=>setDocEsdn(e.target.value)}/></label><label className="cia-field">Publication Date<input type="date" value={docDate} onChange={e=>setDocDate(e.target.value)}/></label>
- <label className="cia-field">Original Classification<input value={docClass} onChange={e=>setDocClass(e.target.value)}/></label><label className="cia-field">Content Type<input value={docType} onChange={e=>setDocType(e.target.value)}/></label>
- <label className="cia-field">Case Number<input value={docCase} onChange={e=>setDocCase(e.target.value)}/></label><label className="cia-field">Collection<input value={docCollection} onChange={e=>setDocCollection(e.target.value)}/></label>
- <label className="cia-field full">Resumen / notas<textarea value={docAbstract} onChange={e=>setDocAbstract(e.target.value)} placeholder="Descripción objetiva, sin inferencias."/></label>
- <div className="cia-actions full"><button disabled={importBusy}>{importBusy?'Incorporando…':'Incorporar al Centro de archivo'}</button></div></form>{importStatus&&<div className="notice">{importStatus}</div>}</div></div>
+const collections = ['A Life in Intelligence - The Richard Helms Collection','A-12 OXCART Reconnaissance Aircraft Documentation','Air America: Upholding the Airmen’s Bond','Atomic Spies: Ethel and Julius Rosenberg'];
+const types = ['Cable','Memorandum','Letter','Intelligence Report','Briefing','Telegram','Study','Photograph','Map','Other'];
+
+export default function CiaSearch() {
+ const [terms,setTerms]=useState('Argentina AND Menem');
+ const [collection,setCollection]=useState<string[]>([]);
+ const [title,setTitle]=useState('');
+ const [esdn,setEsdn]=useState('');
+ const [classification,setClassification]=useState('');
+ const [contentType,setContentType]=useState('');
+ const [from,setFrom]=useState('1989-01-01');
+ const [to,setTo]=useState('1993-12-31');
+ const [caseNumber,setCaseNumber]=useState('');
+ const [copied,setCopied]=useState(false);
+ const [docTitle,setDocTitle]=useState('');
+ const [docUrl,setDocUrl]=useState('');
+ const [docNotes,setDocNotes]=useState('');
+ const [status,setStatus]=useState('');
+
+ const brief=useMemo(()=>[
+  'CIA ELECTRONIC READING ROOM · FICHA DE BÚSQUEDA',
+  'Texto: '+terms,
+  'Colecciones: '+(collection.join('; ')||'Todas'),
+  'Título: '+(title||'—'),
+  'ESDN: '+(esdn||'—'),
+  'Clasificación: '+(classification||'—'),
+  'Tipo: '+(contentType||'—'),
+  'Fechas: '+from+' a '+to,
+  'Caso: '+(caseNumber||'—'),
+  'Nota: la búsqueda textual abre el portal CIA. Aplicar allí los filtros de metadatos.'
+ ].join('\n'),[terms,collection,title,esdn,classification,contentType,from,to,caseNumber]);
+
+ const searchUrl='https://www.cia.gov/readingroom/search/site/'+encodeURIComponent(terms.trim());
+ async function copyBrief(){try{await navigator.clipboard.writeText(brief);setCopied(true)}catch{setCopied(false)}}
+ async function register(e:FormEvent){e.preventDefault();setStatus('La ficha quedó preparada. La incorporación al repositorio requiere que el servicio de archivo esté conectado.');}
+
+ return (
+  <div className="panel cia-panel">
+   <div className="cia-header"><div><span className="eyebrow">FUENTE PRIMARIA · CENTRAL INTELLIGENCE AGENCY</span><h3 className="panel-title">CIA Electronic Reading Room</h3><p className="muted">Búsqueda guiada y ficha de control. No se inventan resultados ni se simula una conexión con el catálogo oficial.</p></div><div className="cia-seal">CIA<br/><small>FOIA</small></div></div>
+   <div className="cia-grid">
+    <label className="cia-field full">Search terms · Texto completo<input value={terms} onChange={e=>setTerms(e.target.value)} placeholder="Argentina AND Menem"/></label>
+    <label className="cia-field full">Colecciones<select multiple value={collection} onChange={e=>setCollection(Array.from(e.target.selectedOptions,o=>o.value))}>{collections.map(x=><option key={x} value={x}>{x}</option>)}</select></label>
+    <label className="cia-field">Título del documento<input value={title} onChange={e=>setTitle(e.target.value)}/></label>
+    <label className="cia-field">Número / ESDN<input value={esdn} onChange={e=>setEsdn(e.target.value)}/></label>
+    <label className="cia-field">Clasificación original<select value={classification} onChange={e=>setClassification(e.target.value)}><option value="">Cualquiera</option><option>Top Secret</option><option>Secret</option><option>Confidential</option><option>Unclassified</option></select></label>
+    <label className="cia-field">Tipo de contenido<select value={contentType} onChange={e=>setContentType(e.target.value)}><option value="">Cualquiera</option>{types.map(x=><option key={x}>{x}</option>)}</select></label>
+    <label className="cia-field">Desde<input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></label>
+    <label className="cia-field">Hasta<input type="date" value={to} onChange={e=>setTo(e.target.value)}/></label>
+    <label className="cia-field full">Número de caso<input value={caseNumber} onChange={e=>setCaseNumber(e.target.value)}/></label>
+   </div>
+   <div className="cia-actions"><a className="cia-submit" href={searchUrl} target="_blank" rel="noreferrer">Buscar en CIA ↗</a><a className="cia-secondary" href="https://www.cia.gov/readingroom/" target="_blank" rel="noreferrer">Advanced Search oficial ↗</a><button className="outline" type="button" onClick={copyBrief}>{copied?'Ficha copiada':'Copiar ficha de filtros'}</button></div>
+   <div className="cia-disclaimer">La consulta textual se abre en cia.gov. Los filtros de colección, fechas y clasificación se conservan en esta ficha para aplicarlos en el formulario oficial; no se transmiten como parámetros si el portal no los admite.</div>
+   <div className="cia-import"><div className="eyebrow">REGISTRO DE FUENTE VERIFICADA</div><h4>Preparar incorporación al archivo</h4><form className="cia-grid" onSubmit={register}>
+    <label className="cia-field full">Título exacto<input required value={docTitle} onChange={e=>setDocTitle(e.target.value)}/></label>
+    <label className="cia-field full">URL oficial<input required type="url" value={docUrl} onChange={e=>setDocUrl(e.target.value)}/></label>
+    <label className="cia-field full">Notas de verificación<textarea value={docNotes} onChange={e=>setDocNotes(e.target.value)} placeholder="Datos de catálogo, fecha, clasificación y observaciones."/></label>
+    <div className="cia-actions full"><button type="submit">Preparar ficha de archivo</button></div>
+   </form>{status&&<div className="notice">{status}</div>}</div>
+  </div>
+ );
 }
