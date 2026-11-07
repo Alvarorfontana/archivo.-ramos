@@ -69,3 +69,51 @@ Se incorporó una línea temática 1989–1990 con documentos del National Secur
 - Archivo Nacional de la Memoria, colección fotográfica de Menem: https://catalogo.jus.gob.ar/index.php/1989-a-1999-presidencia-constitucional-de-carlos-saul-menem
 - NARA API: https://www.archives.gov/research/catalog/help/api
 - FRUS API: https://history.state.gov/developer/catalog
+
+
+## Ampliación del centro de investigación (rama `feat/1989-research-dashboards`)
+
+La rama incorpora un centro de trabajo separado de la portada histórica original. La navegación de la portada incluye un acceso al nuevo centro; la portada y los módulos históricos no se reemplazan.
+
+### Dashboards
+
+- Panel general.
+- Dashboard de Relaciones, con búsqueda y filtro por tipo de entidad. El grafo ilustrativo se identifica como tal y no presenta hipótesis como vínculos probados.
+- Dashboard de Personas, con búsqueda y filtro por país.
+- Global Información, con selección de período y contexto internacional.
+- Centro de API y repositorios.
+- Investigación e informes.
+- Panel de arquitectura de los 13 agentes previstos.
+
+### Consultas de API que sí están habilitadas en el navegador
+
+- **Crossref Works API:** búsqueda bibliográfica por texto.
+- **OpenAlex Works API:** búsqueda de publicaciones académicas.
+- **World Bank Indicators API:** consulta de PIB de Argentina para 1989–1995.
+
+Las consultas muestran resultados y enlaces al registro de origen. La disponibilidad depende de cada proveedor y de sus políticas CORS/cuotas. Los resultados no se convierten automáticamente en evidencia validada.
+
+### Catálogo de fuentes
+
+El catálogo visual de esta rama contiene 49 entradas entre API, servicios de datos, catálogos y repositorios. Incluye NARA, FRUS, CIA Reading Room, archivos presidenciales, AGN, SRE, Itamaraty, UN Comtrade, Banco Mundial, FMI, OECD, Eurostat, ECB, GovInfo, Federal Register, Congress.gov, SEC EDGAR, FRED, BEA, Census, UNHCR, OCHA, OMS, OIT, FAO, UNESCO, Crossref, OpenAlex, PubMed, Europe PMC, ORCID, Semantic Scholar, Google Books, Library of Congress, Wikimedia Commons, Wikidata, Open Library, Smithsonian, DPLA, Zenodo, CORE, GDELT y otros.
+
+**Importante:** 49 entradas catalogadas no equivalen a 49 conectores activos. Solamente Crossref, OpenAlex y Banco Mundial cuentan con consultas directas implementadas en esta interfaz. NARA requiere clave y backend protegido; otras fuentes requieren autenticación, integración específica o verificación de sus condiciones y endpoints.
+
+### Informes
+
+- Guardado de borradores en el navegador local.
+- Exportación de texto.
+- Impresión del informe y opción del navegador para guardarlo como PDF.
+- La sincronización multiusuario y el almacenamiento documental central todavía requieren backend y base de datos.
+
+### Pendientes de infraestructura
+
+- Backend seguro para conectores con credenciales y cuotas.
+- Base documental compartida, almacenamiento de originales y metadatos.
+- Ingestión automatizada, OCR, clasificación, extracción, deduplicación e indexación.
+- Registro de procedencia y localizadores por documento.
+- Verificación de afirmaciones, contradicciones y vacíos.
+- Implementación y orquestación real de los 13 agentes.
+- Pruebas de integración, accesibilidad y despliegue.
+
+No se declaran completados los componentes pendientes ni se muestran como activos conectores que todavía no realizan consultas.
