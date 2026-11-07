@@ -150,3 +150,13 @@ Se incorporó al Centro de Archivo un buscador federado que envía una misma con
 - 1989–1993 — Colección GB-NSC, NAID 2163580; la serie Presidential Telcon Files tiene NAID 321498139: https://www.bush41library.gov/digital-research-room/finding-aid/records-national-security-council-george-h-w-bush-administration
 
 Se distinguen los documentos PDF originales de los instrumentos de descripción archivística. La existencia de una reunión o llamada no acredita por sí sola su contenido, acuerdos ni causalidad.
+
+
+### Actualización del atlas y la red documental — 7 de noviembre de 2026
+
+- El atlas dejó de usar la capa satelital comercial como vista predeterminada. Ahora abre cartografía editorial CARTO/OSM, con atribución cartográfica visible y capas temáticas. Las fichas de Buenos Aires, Ciudad de México y Washington incorporan registros fechados y enlaces primarios. El mapa señala ciudades e instituciones a escala urbana; no representa domicilios ni trayectos no acreditados.
+- La cronología espacial se reemplazó por hitos fechados: nominación y credenciales de Negroponte, visita Bush–Menem de septiembre de 1989, visita de Salinas, registros presidenciales de 1990–1991 y decretos de 1992.
+- La red se amplió a 36 nodos y 53 vínculos. Se añadieron nodos documentales separados para reuniones, llamadas y registros oficiales. Los actores se conectan con los documentos que los mencionan; no se dibuja un contacto personal directo cuando el soporte es solo una coincidencia institucional.
+- El filtro de red muestra el período completo 1983–1995 por defecto; el filtro anual es opcional.
+
+Estas modificaciones están en la rama feat/1989-research-dashboards. No se desplegaron a producción y todavía requieren prueba de interfaz en navegador.
