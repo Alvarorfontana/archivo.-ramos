@@ -169,7 +169,7 @@ body{background:linear-gradient(180deg,#f7f4ed 0%,#eeeae1 100%);color:var(--crea
 <div class="panel" style="margin-top:12px"><h3>Redactor de informes</h3>
 <label class="meta">TÍTULO DEL INFORME</label><input id="reportTitle" value="Informe de investigación — Ramos / Negroponte" style="width:100%;padding:11px;margin:6px 0 10px;background:#0b1520;border:1px solid var(--line);color:var(--cream)">
 <label class="meta">TEXTO DEL INFORME</label><textarea id="reportBody" rows="12" placeholder="Introducción, pregunta de investigación, antecedentes, análisis documental, hallazgos, contradicciones y conclusiones…" style="width:100%;padding:12px;margin:6px 0 10px;background:#0b1520;border:1px solid var(--line);color:var(--cream);line-height:1.6"></textarea>
-<div class="filterbar"><button class="btn primary" id="saveReport">GUARDAR BORRADOR</button><button class="btn" id="exportReport">IMPRIMIR / GUARDAR PDF</button><button class="btn" id="insertFindings">INCORPORAR HALLAZGOS</button></div>
+<div class="filterbar"><button class="btn" id="buildDossier">ARMAR DOSSIER CON FUENTES REGISTRADAS</button><button class="btn primary" id="saveReport">GUARDAR BORRADOR</button><button class="btn" id="exportReport">IMPRIMIR / GUARDAR PDF</button><button class="btn" id="insertFindings">INCORPORAR HALLAZGOS</button></div>
 <div class="meta" id="reportStatus">Los borradores se guardan localmente en este navegador.</div></div>
 </section>
 <section id="sources" class="section"><div class="sectionhead"><div><div class="eyebrow">06 / Conectores documentales</div><h2>Fuentes y API</h2><p>Catálogos oficiales, archivos presidenciales y repositorios de documentación.</p></div></div><div class="sources" id="sourcecards"></div><div class="notice"><b>Credenciales:</b> NARA requiere una clave API emitida por el organismo. No debe incluirse en el navegador ni subirse a GitHub. La integración segura requiere un backend protegido con la variable NARA_API_KEY. FRUS ofrece un catálogo API público sin clave; todavía no está conectado como buscador integrado en esta versión.</div></section>
@@ -473,6 +473,49 @@ async function runApiResearch(){
  button.disabled=false;button.textContent='BUSCAR EN FUENTES ↗';
 }
 document.querySelector('#runApiResearch').addEventListener('click',runApiResearch);
+document.querySelector('#buildDossier').addEventListener('click',()=>{
+ const imported=researchStore.importedSources||[];
+ const query=document.querySelector('#apiResearchQuery')?.value?.trim()||'Consulta documental del expediente 1983–1995';
+ const findings=researchStore.findings||[];
+ const lines=[
+  'DOSSIER DOCUMENTAL · 1989 / ARCHIVE',
+  'Fecha de elaboración: '+new Date().toLocaleString('es-AR'),
+  'Pregunta / términos de búsqueda: '+query,
+  '',
+  '1. OBJETO Y ALCANCE',
+  'Este borrador organiza referencias localizadas mediante los conectores documentales del archivo. No constituye una conclusión histórica ni sustituye la lectura de los documentos originales.',
+  '',
+  '2. FUENTES REGISTRADAS',
+  'Cantidad de referencias incorporadas: '+imported.length,
+  ...imported.map((r,i)=>(i+1)+'. '+r.title+'\n   Proveedor: '+apiResearchLabels[r.provider]+'\n   Fecha del registro: '+(r.date||'No consignada')+'\n   Autoría: '+((r.authors||[]).join(', ')||'No consignada')+'\n   Publicación / colección: '+(r.publication||'No consignada')+'\n   Identificador: '+(r.id||'No consignado')+'\n   URL original: '+r.url+'\n   Nota: '+(r.description||'Metadatos de catálogo; revisar el original.')),
+  '',
+  '3. HALLAZGOS REGISTRADOS POR EL INVESTIGADOR',
+  findings.length?findings.map((f,i)=>(i+1)+'. ['+f.type+'] '+f.text+'\n   Fuente: '+f.source+'\n   Localizador: '+f.locator+'\n   URL: '+(f.url||'No consignada')).join('\n\n'):'No hay hallazgos analíticos registrados en el espacio de trabajo.',
+  '',
+  '4. CRITERIOS DE VALIDACIÓN',
+  '- Verificar cada documento en el repositorio original.',
+  '- Registrar autor, fecha, institución, signatura, página o folio.',
+  '- Distinguir hechos documentados, interpretaciones, alegaciones e hipótesis.',
+  '- No inferir contactos, coordinación ni causalidad por la mera coincidencia temporal o institucional.',
+  '- Los resultados Crossref y OpenAlex son bibliografía secundaria; FRUS y NARA pueden ofrecer descripciones o fuentes primarias, pero cada documento debe leerse y citarse.',
+  '',
+  '5. LÍMITES DEL BORRADOR',
+  'Este documento se generó a partir de metadatos y notas que fueron incorporados al archivo. No se descargaron ni analizaron automáticamente los textos completos de todos los registros. No se atribuyen conclusiones a documentos que todavía no fueron examinados.',
+  '',
+  '6. PRÓXIMAS TAREAS',
+  '- Descargar y examinar los documentos primarios relevantes.',
+  '- Extraer citas textuales con página o folio.',
+  '- Contrastar las versiones de los distintos archivos.',
+  '- Completar cronología y matriz de actores solo con evidencia trazable.'
+ ];
+ document.querySelector('#reportTitle').value='Dossier documental — '+query.slice(0,90);
+ document.querySelector('#reportBody').value=lines.join('\n');
+ researchStore.reportTitle=document.querySelector('#reportTitle').value;
+ researchStore.reportBody=document.querySelector('#reportBody').value;
+ persistResearch();
+ document.querySelector('#reportStatus').textContent='Dossier preliminar armado con '+imported.length+' referencias registradas y '+findings.length+' hallazgos. Revisá y completá el contenido antes de exportar el PDF.';
+});
+
 document.querySelector('#apiResearchQuery').addEventListener('keydown',e=>{if(e.key==='Enter')runApiResearch()});
 if(Array.isArray(researchStore.importedSources)&&researchStore.importedSources.length){
  researchStore.importedSources.slice().reverse().forEach(record=>{
