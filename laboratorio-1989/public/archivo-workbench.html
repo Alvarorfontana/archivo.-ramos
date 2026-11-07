@@ -74,6 +74,8 @@ body{background:linear-gradient(180deg,#f7f4ed 0%,#eeeae1 100%);color:var(--crea
 .api-workbench{border-color:#b89a68!important;background:linear-gradient(145deg,#fffdf8,#f5f0e6)!important}.api-workbench-head{display:flex;justify-content:space-between;gap:15px;align-items:start}.api-workbench-head h3{font:22px 'Playfair Display';margin:6px 0}.api-query{display:grid;grid-template-columns:1fr auto;gap:8px;margin:15px 0}.api-query input{padding:12px;background:#fff;border:1px solid var(--line);color:var(--cream);min-width:0}.api-status{font:10px 'DM Mono';color:var(--muted);padding:9px 0}.api-provider{border-top:1px solid var(--line);padding:12px 0}.api-provider-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.api-provider-head b{font:14px 'Playfair Display'}.api-provider-head small{font:9px 'DM Mono';color:var(--muted)}.api-result-card{padding:10px 0;border-top:1px solid #ddd5c8;display:grid;grid-template-columns:1fr auto;gap:10px}.api-result-card strong{font-size:12px;line-height:1.45}.api-result-card p{font-size:10px;line-height:1.5;color:#63727a;margin:5px 0}.api-result-card a{font-size:10px;color:#8b6532}.api-result-card button{align-self:center;white-space:nowrap}.api-badge{font:9px 'DM Mono';color:#57755f}.api-error{color:#a34f42;font-size:11px;padding:8px 0}@media(max-width:650px){.api-query{grid-template-columns:1fr}.api-workbench-head{display:block}.api-result-card{grid-template-columns:1fr}.api-result-card button{justify-self:start}}
 
 .atlas-record{border-top:1px solid #d8d0c2;margin-top:8px;padding-top:7px}.atlas-record small{display:block;font:9px 'DM Mono';color:#8a6a3e}.atlas-record a{display:block;font-size:11px;color:#31566c;font-weight:600;text-decoration:none;margin:2px 0}.atlas-record em{display:block;font-style:normal;font-size:9px;color:#6e7d84}
+
+.network-all-years{display:flex;align-items:center;gap:8px;font:9px 'DM Mono';color:#667782}.network-all-years input{width:auto;accent-color:#98713e}
 </style></head>
 <body>
 <header class="top"><div class="brand"><div class="brandmark"><svg viewBox="0 0 54 54" aria-label="Archivo 1989"><path d="M7 8h40v38H7z" fill="none" stroke="#9a7138" stroke-width="1.7"/><path d="M13 15h28M13 21h28M13 27h17M13 33h28M13 39h19" stroke="#9a7138" stroke-width="1.4"/><circle cx="36" cy="27" r="5.5" fill="#a76545"/></svg></div><div><strong>ARCHIVO 1989</strong><small>HISTORIA · DIPLOMACIA · DOCUMENTOS</small></div></div><div class="topright"><span class="status">● LABORATORIO DOCUMENTAL</span><span>ARG · MEX · USA</span><span>1983—1995</span></div></header>
@@ -117,6 +119,7 @@ body{background:linear-gradient(180deg,#f7f4ed 0%,#eeeae1 100%);color:var(--crea
 <label>TIPO DE NODO<select id="networkType"><option value="">Todos</option><option value="person">Personas</option><option value="institution">Instituciones</option><option value="document">Documentos</option><option value="event">Acontecimientos</option><option value="country">Países</option></select></label>
 <label>ESTADO DEL VÍNCULO<select id="networkEvidence"><option value="">Todos los estados</option><option value="documented">Documentado / fuente primaria</option><option value="context">Contexto institucional</option><option value="open">Línea abierta</option></select></label>
 <label>AÑO<input id="networkYear" type="range" min="1983" max="1995" value="1992"><span id="networkYearLabel">1992</span></label>
+<label class="network-all-years"><input id="networkAllYears" type="checkbox" checked> MOSTRAR TODO 1983–1995</label>
 <button class="btn" id="networkReset">RESTABLECER RED</button>
 </div>
 <div class="network-layout">
@@ -372,17 +375,18 @@ function initNetwork(){
  document.querySelector('#networkType').addEventListener('change',applyNetworkFilters);
  document.querySelector('#networkEvidence').addEventListener('change',applyNetworkFilters);
  document.querySelector('#networkYear').addEventListener('input',()=>{document.querySelector('#networkYearLabel').textContent=document.querySelector('#networkYear').value;applyNetworkFilters()});
- document.querySelector('#networkReset').addEventListener('click',()=>{document.querySelector('#networkSearch').value='';document.querySelector('#networkType').value='';document.querySelector('#networkEvidence').value='';document.querySelector('#networkYear').value='1992';document.querySelector('#networkYearLabel').textContent='1992';applyNetworkFilters();network.fit({animation:true})});
+ document.querySelector('#networkAllYears').addEventListener('change',applyNetworkFilters);
+ document.querySelector('#networkReset').addEventListener('click',()=>{document.querySelector('#networkSearch').value='';document.querySelector('#networkType').value='';document.querySelector('#networkEvidence').value='';document.querySelector('#networkYear').value='1992';document.querySelector('#networkYearLabel').textContent='1992';document.querySelector('#networkAllYears').checked=true;applyNetworkFilters();network.fit({animation:true})});
  const counts=[graphNodes.filter(n=>n.type==='person').length,graphNodes.length,graphEdges.filter(e=>e.kind==='documented').length,graphEdges.filter(e=>e.kind==='open').length];
  document.querySelector('#networkKpis').innerHTML=[['ACTORES',counts[0]],['NODOS TOTALES',counts[1]],['VÍNCULOS CON FUENTE',counts[2]],['LÍNEAS ABIERTAS',counts[3]]].map(x=>'<div class="network-kpi"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>').join('');
  applyNetworkFilters();renderNetworkInspector(null);renderEdgeRegister();
 }
 function applyNetworkFilters(){
  if(!networkData)return;
- const q=(document.querySelector('#networkSearch').value||'').toLowerCase(),type=document.querySelector('#networkType').value,evidence=document.querySelector('#networkEvidence').value,year=+document.querySelector('#networkYear').value;
+ const q=(document.querySelector('#networkSearch').value||'').toLowerCase(),type=document.querySelector('#networkType').value,evidence=document.querySelector('#networkEvidence').value,year=+document.querySelector('#networkYear').value,allYears=document.querySelector('#networkAllYears').checked;
  const matching=graphNodes.filter(n=>(!q||(n.label+' '+n.detail+' '+n.source).toLowerCase().includes(q))&&(!type||n.type===type));
  const allowed=new Set(matching.map(n=>n.id));
- const edges=graphEdges.filter(e=>allowed.has(e.from)&&allowed.has(e.to)&&(!evidence||e.kind===evidence)&&year>=e.start&&year<=e.end);
+ const edges=graphEdges.filter(e=>allowed.has(e.from)&&allowed.has(e.to)&&(!evidence||e.kind===evidence)&&(allYears||(year>=e.start&&year<=e.end)));
  const edgeNodeIds=new Set(edges.flatMap(e=>[e.from,e.to]));
  const visibleNodes=matching.filter(n=>edgeNodeIds.has(n.id)||!evidence);
  networkData.nodes.update(graphNodes.map(n=>({id:n.id,hidden:!visibleNodes.some(v=>v.id===n.id)})));
