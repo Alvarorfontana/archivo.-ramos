@@ -117,3 +117,14 @@ El catálogo visual de esta rama contiene 49 entradas entre API, servicios de da
 - Pruebas de integración, accesibilidad y despliegue.
 
 No se declaran completados los componentes pendientes ni se muestran como activos conectores que todavía no realizan consultas.
+
+
+### Acceso operativo a NARA, CIA y FRUS
+
+- **NARA:** el dashboard abre búsquedas del catálogo público. Para integración programática, NARA Catalog API v2 requiere una clave de lectura gratuita solicitada a `Catalog_API@nara.gov`, enviada en el encabezado `x-api-key`. Límite estándar documentado: 10.000 consultas mensuales por clave. No colocar la clave en JavaScript ni en GitHub; incorporarla como secreto del backend cuando este exista. Documentación: https://www.archives.gov/research/catalog/help/api y https://www.archives.gov/research/catalog/help/api-getting-started.
+- **CIA:** el dashboard abre la búsqueda de texto completo del CIA FOIA Electronic Reading Room: https://www.cia.gov/readingroom/search/site/ . El repositorio público contiene documentos desclasificados y páginas digitalizadas; la interfaz permite consulta y acceso a documentos. No se ha confirmado una API pública general oficial, por lo que se integra mediante su buscador institucional y enlaces a los originales, sin scraping no autorizado.
+- **FRUS:** el dashboard consulta directamente el catálogo público OPDS/XML de Office of the Historian en `https://history.state.gov/api/v1/catalog/search?q=`, sin registro ni clave. Devuelve volúmenes y enlaces oficiales. La búsqueda en esta interfaz depende de que el navegador pueda acceder al servicio externo (CORS/disponibilidad).
+
+La CIA Reading Room y el catálogo NARA son fuentes públicas consultables aun cuando la automatización mediante API tenga requisitos distintos. El sistema distingue acceso público, API oficial y conector automatizado para no confundirlos.
+
+Fuentes oficiales consultadas: NARA API help; NARA Getting Started; CIA FOIA Electronic Reading Room y CIA FAQ; Office of the Historian API documentation.
