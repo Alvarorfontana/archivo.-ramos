@@ -44,9 +44,9 @@ Se incorporó una línea temática 1989–1990 con documentos del National Secur
 - Las bibliotecas de visualización y cartografía se cargan desde CDN.
 - El buscador de archivo filtra el conjunto local de registros incorporado en el HTML. Los botones de acceso abren las fuentes originales.
 - El directorio incluye nuevos archivos diplomáticos, fondos presidenciales, guías universitarias y hemerotecas. Son referencias de búsqueda; no significa que todos los documentos estén descargados o examinados.
-- El catálogo FRUS y NARA están documentados y enlazados, pero **no hay aún conectores API activos dentro de la aplicación**.
-- NARA requiere un backend protegido. Añadir un servicio (por ejemplo, FastAPI) y guardar `NARA_API_KEY` como variable de entorno del proveedor de hosting. Nunca exponerla en JavaScript, HTML, archivos públicos o commits.
-- No se afirma que los agentes de investigación estén implementados ni que exista un backend de investigación.
+- En la actualización del 7/11/2026 se agregaron rutas backend para FRUS, Crossref, OpenAlex y NARA. La consulta NARA requiere `NARA_API_KEY` privada en Vercel.
+- El análisis con IA y la persistencia compartida requieren Gemini y Neon, que no estaban configurados en la comprobación de producción previa a esta actualización.
+- Los agentes de investigación siguen siendo una arquitectura prevista, no un conjunto de agentes autónomos ya operativo.
 - La versión se publica en Vercel mediante despliegue directo de archivos. La integración GitHub–Vercel automática no está configurada.
 
 ## Integridad histórica
@@ -123,9 +123,9 @@ No se declaran completados los componentes pendientes ni se muestran como activo
 
 ### Acceso operativo a NARA, CIA y FRUS
 
-- **NARA:** el dashboard abre búsquedas del catálogo público. Para integración programática, NARA Catalog API v2 requiere una clave de lectura gratuita solicitada a `Catalog_API@nara.gov`, enviada en el encabezado `x-api-key`. Límite estándar documentado: 10.000 consultas mensuales por clave. No colocar la clave en JavaScript ni en GitHub; incorporarla como secreto del backend cuando este exista. Documentación: https://www.archives.gov/research/catalog/help/api y https://www.archives.gov/research/catalog/help/api-getting-started.
+- **NARA:** el conector backend consulta Catalog API v2 y envía la clave privada mediante el encabezado `x-api-key`. Requiere solicitar una clave de lectura a `Catalog_API@nara.gov`; límite estándar documentado: 10.000 consultas mensuales por clave. La ruta devuelve estado `not_configured` si falta la variable en el servidor. Documentación: https://www.archives.gov/research/catalog/help/api y https://www.archives.gov/research/catalog/help/api-getting-started.
 - **CIA:** el dashboard abre la búsqueda de texto completo del CIA FOIA Electronic Reading Room: https://www.cia.gov/readingroom/search/site/ . El repositorio público contiene documentos desclasificados y páginas digitalizadas; la interfaz permite consulta y acceso a documentos. No se ha confirmado una API pública general oficial, por lo que se integra mediante su buscador institucional y enlaces a los originales, sin scraping no autorizado.
-- **FRUS:** el dashboard consulta directamente el catálogo público OPDS/XML de Office of the Historian en `https://history.state.gov/api/v1/catalog/search?q=`, sin registro ni clave. Devuelve volúmenes y enlaces oficiales. La búsqueda en esta interfaz depende de que el navegador pueda acceder al servicio externo (CORS/disponibilidad).
+- **FRUS:** el dashboard consulta el catálogo público OPDS/XML a través de la ruta backend `/api/research/frus`, sin registro ni clave en Office of the Historian. Devuelve entradas de catálogo, materias, volúmenes y enlaces oficiales. Para citar un documento se debe abrir el volumen y localizar su página o sección.
 
 La CIA Reading Room y el catálogo NARA son fuentes públicas consultables aun cuando la automatización mediante API tenga requisitos distintos. El sistema distingue acceso público, API oficial y conector automatizado para no confundirlos.
 
@@ -139,3 +139,14 @@ Se incorporó al Centro de Archivo un buscador federado que envía una misma con
 **Estado de producción comprobado antes de esta actualización de código:** el endpoint World Bank responde con series reales. El chequeo de salud informó que la base de datos, Gemini, NARA y la contraseña de acceso no estaban configurados. En Vercel solo se encontró definida `GEMINI_MODEL`; no se encontraron secretos de conexión. Por eso el guardado centralizado, el análisis con IA y la consulta NARA no deben presentarse como activos hasta configurar y probar esas dependencias.
 
 **Estado de esta rama:** se modificó GitHub, pero esta actualización no fue desplegada ni probada en producción. No afirmar que los nuevos conectores ya están disponibles en el sitio público hasta realizar un único despliegue final y comprobar respuestas reales de cada ruta.
+
+
+### Documentos primarios incorporados desde el índice de la Biblioteca Bush
+
+- 27/09/1989 — Memorando de conversación Bush–Menem en la Casa Blanca: https://bush41library.tamu.edu/files/memcons-telcons/1989-09-27--Menem.pdf
+- 05/12/1990 — Almuerzo con Carlos Saúl Menem, NAID 321498039: https://catalog.archives.gov/medialz/presidential-libraries/bush/gb-nsc/321498039/1990-12-05--Menem.pdf
+- 19/01/1991 — Conversación telefónica con Carlos Menem, NAID 321498139: https://catalog.archives.gov/medialz/presidential-libraries/bush/gb-nsc/321498139/1991-01-19--Menem.pdf
+- 08/02/1991 — Reunión con Guido Di Tella, NAID 321498039: https://catalog.archives.gov/medialz/presidential-libraries/bush/gb-nsc/321498039/1991-02-08--Di-Tella.pdf
+- 1989–1993 — Colección GB-NSC, NAID 2163580; la serie Presidential Telcon Files tiene NAID 321498139: https://www.bush41library.gov/digital-research-room/finding-aid/records-national-security-council-george-h-w-bush-administration
+
+Se distinguen los documentos PDF originales de los instrumentos de descripción archivística. La existencia de una reunión o llamada no acredita por sí sola su contenido, acuerdos ni causalidad.
