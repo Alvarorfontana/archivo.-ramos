@@ -247,7 +247,7 @@ function showActor(id){const a=actors.find(x=>x.id===id);const p=document.queryS
 document.querySelector('#dossiercards').innerHTML=dossiers.map(d=>'<article class="card"><div class="tag">EXPEDIENTE '+d[0]+'</div><h3>'+d[1]+'</h3><div class="meta">'+d[2]+'</div><p>'+d[3]+'</p></article>').join('');
 document.querySelector('#sourcecards').innerHTML=sources.map(s=>'<article class="source"><div class="meta">'+s[2]+'</div><strong>'+s[0]+'</strong><p>'+s[1]+'</p><a href="'+s[3]+'" target="_blank" rel="noopener">ABRIR REPOSITORIO ↗</a></article>').join('');
 document.querySelector('#timeline').innerHTML=chronology.map(e=>'<div class="event"><small>'+e[0]+' · '+e[1]+'</small><b>'+e[2]+'</b></div>').join('');
-let network=null;let network=null,networkData=null,selectedNetworkNode=null;
+let network=null,networkData=null,selectedNetworkNode=null;
 const graphNodes=[
 {id:'ramos',label:'Jorge Abelardo Ramos',type:'person',group:'person',period:'1990–1992',detail:'Historiador y diplomático argentino. Embajador en México. El expediente debe reconstruir nombramiento, instrucciones, agenda y cese mediante actos y documentos primarios.',url:'https://www.argentina.gob.ar/normativa',source:'Normativa nacional argentina'},
 {id:'negroponte',label:'John D. Negroponte',type:'person',group:'person',period:'1989–1993',detail:'Embajador de Estados Unidos en México durante la presidencia de Salinas. Su historia oral ADST es retrospectiva; los cables y despachos deben buscarse en archivos oficiales.',url:'https://history.state.gov/departmenthistory/people/negroponte-john-d',source:'Office of the Historian'},
