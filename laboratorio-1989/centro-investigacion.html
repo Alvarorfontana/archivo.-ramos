@@ -62,6 +62,15 @@
 <div class="grid"><div class="metric"><small>REGIONES</small><strong>Global</strong><span>Selección geográfica</span></div><div class="metric"><small>DIMENSIONES</small><strong>04</strong><span>Política, economía, seguridad, organismos</span></div><div class="metric"><small>PERÍODO</small><strong id="yearLabel">1989</strong><span>Año de consulta</span></div><div class="metric"><small>INDICADORES</small><strong>Por integrar</strong><span>Sin cifras inventadas</span></div></div>
 <div class="cols"><div class="panel"><h3>Agenda internacional de investigación</h3><div class="event"><b>1989</b><p>Reconfiguración del orden internacional, cambios políticos en Europa y transición de gobiernos en América.</p></div><div class="event"><b>1990–1991</b><p>Guerra del Golfo, reunificación alemana y disolución de la Unión Soviética.</p></div><div class="event"><b>1992–1993</b><p>Transformación de acuerdos comerciales y nuevas arquitecturas regionales.</p></div><div class="event"><b>1994–1995</b><p>Consolidación de nuevos marcos multilaterales y comerciales.</p></div></div><div class="panel"><h3>Dimensiones para conectar</h3><p><span class="pill">Gobiernos</span><span class="pill">Cancillerías</span><span class="pill">Seguridad</span><span class="pill">Comercio</span><span class="pill">Finanzas</span><span class="pill">Energía</span><span class="pill">Organismos</span><span class="pill">Prensa</span><span class="pill">Opinión pública</span></p><p class="small">Los indicadores se mostrarán cuando exista una serie identificada, con unidad, cobertura, metodología y fuente.</p></div></div>
 
+
+<div class="panel" style="margin-top:14px" id="archiveSearch">
+<h3>Buscador de archivos históricos · NARA / CIA / FRUS</h3>
+<p>Acceso directo a catálogos públicos y consulta del catálogo FRUS. Los documentos se abren en el sitio institucional original para conservar contexto, metadatos y restricciones.</p>
+<div class="toolbar"><input id="archiveQuery" style="flex:1;min-width:220px" placeholder="Buscar: Ramos, Argentina, Mexico, Negroponte…"><button class="btn" onclick="searchNara()">Buscar en NARA</button><button class="btn" onclick="searchCIA()">Buscar en CIA</button><button class="btn primary" onclick="searchFRUS()">Consultar FRUS</button></div>
+<div id="archiveStatus" class="small" aria-live="polite">NARA: catálogo público y API oficial con clave. CIA: Electronic Reading Room con búsqueda de texto completo. FRUS: catálogo API público sin clave.</div>
+<div id="frusResults" class="feed" aria-live="polite"></div>
+<p class="small">NARA: el portal público permite consultar registros; su API oficial requiere una clave gratuita de lectura. CIA: los documentos desclasificados se consultan en su Electronic Reading Room; no se afirma que exista una API pública general. FRUS: catálogo oficial OPDS/XML y enlaces a volúmenes.</p>
+</div>
 <div class="panel live-research" style="margin-top:14px" id="liveResearch">
 <h3>Consulta de fuentes abiertas en tiempo real</h3>
 <p>Consultas directas a servicios públicos sin credenciales desde el navegador. Los resultados conservan enlace y metadatos de origen; no se incorporan automáticamente como evidencia validada.</p>
@@ -171,6 +180,25 @@ async function searchWorldBank(){
  status.textContent='Consultando Banco Mundial: PIB de Argentina, 1989–1995…';out.textContent='';
  try{const r=await fetch('https://api.worldbank.org/v2/country/ARG/indicator/NY.GDP.MKTP.CD?date=1989:1995&format=json&per_page=100');if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json(),rows=j[1]||[];out.innerHTML='<div class="feed"><b>Banco Mundial · PIB (US$ corrientes)</b><br>'+rows.map(x=>'<div class="feed">'+x.date+' · '+(x.value==null?'Sin dato':Number(x.value).toLocaleString('es-AR'))+'</div>').join('')+'<a href="https://api.worldbank.org/v2/country/ARG/indicator/NY.GDP.MKTP.CD?date=1989:1995&format=json" target="_blank" rel="noopener noreferrer">Abrir respuesta original</a></div>';status.textContent='Consulta completada. Serie original del Banco Mundial; revisar metodología, cobertura y valores faltantes antes de interpretar.';}
  catch(e){status.textContent='No se pudo consultar el Banco Mundial: '+e.message;}
+}
+
+
+function archiveTerm(){return document.getElementById('archiveQuery').value.trim();}
+function searchNara(){const q=archiveTerm();if(!q){document.getElementById('archiveStatus').textContent='Ingresá un término.';return;}window.open('https://catalog.archives.gov/search?q='+encodeURIComponent(q),'_blank','noopener');document.getElementById('archiveStatus').textContent='Se abrió el catálogo oficial de NARA para: '+q+'. Para automatizar la API Catalog v2 se debe configurar NARA_API_KEY en el backend.';}
+function searchCIA(){const q=archiveTerm();if(!q){document.getElementById('archiveStatus').textContent='Ingresá un término.';return;}window.open('https://www.cia.gov/readingroom/search/site/'+encodeURIComponent(q),'_blank','noopener');document.getElementById('archiveStatus').textContent='Se abrió la búsqueda de texto completo del CIA FOIA Electronic Reading Room para: '+q+'. Revisar número de documento, fecha, clasificación y páginas.';}
+async function searchFRUS(){
+ const q=archiveTerm(),status=document.getElementById('archiveStatus'),out=document.getElementById('frusResults');
+ if(!q){status.textContent='Ingresá un término.';return;}
+ status.textContent='Consultando el catálogo oficial FRUS…';out.textContent='';
+ try{
+  const r=await fetch('https://history.state.gov/api/v1/catalog/search?q='+encodeURIComponent(q));
+  if(!r.ok)throw Error('HTTP '+r.status);
+  const xml=await r.text(),doc=new DOMParser().parseFromString(xml,'application/xml');
+  if(doc.querySelector('parsererror'))throw Error('Respuesta XML no válida');
+  const entries=[...doc.getElementsByTagNameNS('http://www.w3.org/2005/Atom','entry')];
+  out.innerHTML=entries.map(e=>{const title=e.getElementsByTagNameNS('http://www.w3.org/2005/Atom','title')[0]?.textContent||'Volumen FRUS';const summary=e.getElementsByTagNameNS('http://www.w3.org/2005/Atom','summary')[0]?.textContent||'';const links=[...e.getElementsByTagNameNS('http://www.w3.org/2005/Atom','link')];const href=links.find(l=>/acquisition|alternate/.test(l.getAttribute('rel')||''))?.getAttribute('href')||links[0]?.getAttribute('href')||'';return '<div class="feed"><b>'+title.replaceAll('&','&amp;').replaceAll('<','&lt;')+'</b><br><span class="small">'+summary.replaceAll('&','&amp;').replaceAll('<','&lt;').slice(0,420)+'</span><br>'+(href?'<a href="'+href.replaceAll('"','&quot;')+'" target="_blank" rel="noopener noreferrer">Abrir volumen / registro</a>':'')+'</div>';}).join('')||'El catálogo no devolvió volúmenes para esta búsqueda.';
+  status.textContent='FRUS respondió con '+entries.length+' entradas. El catálogo devuelve volúmenes y enlaces oficiales; revisar el contenido primario antes de citar.';
+ }catch(e){status.textContent='No se pudo consultar FRUS desde el navegador: '+e.message+'. Abrí el catálogo oficial desde su enlace en Fuentes y API.';}
 }
 
 </script>
