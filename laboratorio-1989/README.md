@@ -85,19 +85,21 @@ La rama incorpora un centro de trabajo separado de la portada histórica origina
 - Investigación e informes.
 - Panel de arquitectura de los 13 agentes previstos.
 
-### Consultas de API que sí están habilitadas en el navegador
+### Consultas de API implementadas
 
-- **Crossref Works API:** búsqueda bibliográfica por texto.
-- **OpenAlex Works API:** búsqueda de publicaciones académicas.
-- **World Bank Indicators API:** consulta de PIB de Argentina para 1989–1995.
+- **FRUS:** búsqueda del catálogo público OPDS/XML mediante backend Next.js (`/api/research/frus`).
+- **Crossref Works:** búsqueda bibliográfica mediante backend (`/api/research/crossref`).
+- **OpenAlex Works:** búsqueda de publicaciones académicas mediante backend (`/api/research/openalex`).
+- **World Bank Indicators:** series macroeconómicas mediante `/api/data/worldbank`.
+- **NARA Catalog v2:** ruta segura `/api/research/nara`; requiere `NARA_API_KEY` en el servidor y no responde mientras esa variable no esté configurada.
 
-Las consultas muestran resultados y enlaces al registro de origen. La disponibilidad depende de cada proveedor y de sus políticas CORS/cuotas. Los resultados no se convierten automáticamente en evidencia validada.
+Los resultados se muestran por proveedor, con su procedencia y enlace original. La disponibilidad depende de cada servicio. Los metadatos no se convierten automáticamente en evidencia validada.
 
 ### Catálogo de fuentes
 
 El catálogo visual de esta rama contiene 49 entradas entre API, servicios de datos, catálogos y repositorios. Incluye NARA, FRUS, CIA Reading Room, archivos presidenciales, AGN, SRE, Itamaraty, UN Comtrade, Banco Mundial, FMI, OECD, Eurostat, ECB, GovInfo, Federal Register, Congress.gov, SEC EDGAR, FRED, BEA, Census, UNHCR, OCHA, OMS, OIT, FAO, UNESCO, Crossref, OpenAlex, PubMed, Europe PMC, ORCID, Semantic Scholar, Google Books, Library of Congress, Wikimedia Commons, Wikidata, Open Library, Smithsonian, DPLA, Zenodo, CORE, GDELT y otros.
 
-**Importante:** 49 entradas catalogadas no equivalen a 49 conectores activos. Solamente Crossref, OpenAlex y Banco Mundial cuentan con consultas directas implementadas en esta interfaz. NARA requiere clave y backend protegido; otras fuentes requieren autenticación, integración específica o verificación de sus condiciones y endpoints.
+**Importante:** 49 entradas catalogadas no equivalen a 49 conectores activos. Los conectores de búsqueda programática implementados en esta rama son FRUS, Crossref, OpenAlex y Banco Mundial; NARA dispone de una ruta backend protegida, pero necesita una clave válida para devolver resultados. CIA y otros archivos se consultan mediante sus interfaces oficiales hasta verificar una API pública estable.
 
 ### Informes
 
@@ -128,3 +130,12 @@ No se declaran completados los componentes pendientes ni se muestran como activo
 La CIA Reading Room y el catálogo NARA son fuentes públicas consultables aun cuando la automatización mediante API tenga requisitos distintos. El sistema distingue acceso público, API oficial y conector automatizado para no confundirlos.
 
 Fuentes oficiales consultadas: NARA API help; NARA Getting Started; CIA FOIA Electronic Reading Room y CIA FAQ; Office of the Historian API documentation.
+
+
+## Actualización técnica — 7 de noviembre de 2026
+
+Se incorporó al Centro de Archivo un buscador federado que envía una misma consulta a cuatro servicios y presenta resultados separados por proveedor: FRUS, NARA, Crossref y OpenAlex. Las rutas nuevas están en `app/api/research/`; las claves permanecen exclusivamente en el servidor. Cada resultado puede registrarse como referencia en el archivo de trabajo local y se conserva su URL de origen.
+
+**Estado de producción comprobado antes de esta actualización de código:** el endpoint World Bank responde con series reales. El chequeo de salud informó que la base de datos, Gemini, NARA y la contraseña de acceso no estaban configurados. En Vercel solo se encontró definida `GEMINI_MODEL`; no se encontraron secretos de conexión. Por eso el guardado centralizado, el análisis con IA y la consulta NARA no deben presentarse como activos hasta configurar y probar esas dependencias.
+
+**Estado de esta rama:** se modificó GitHub, pero esta actualización no fue desplegada ni probada en producción. No afirmar que los nuevos conectores ya están disponibles en el sitio público hasta realizar un único despliegue final y comprobar respuestas reales de cada ruta.
