@@ -31,5 +31,5 @@ const [docTitle,setDocTitle]=useState(''),[docUrl,setDocUrl]=useState(''),[docEs
  <label className="cia-field">Original Classification<input value={docClass} onChange={e=>setDocClass(e.target.value)}/></label><label className="cia-field">Content Type<input value={docType} onChange={e=>setDocType(e.target.value)}/></label>
  <label className="cia-field">Case Number<input value={docCase} onChange={e=>setDocCase(e.target.value)}/></label><label className="cia-field">Collection<input value={docCollection} onChange={e=>setDocCollection(e.target.value)}/></label>
  <label className="cia-field full">Resumen / notas<textarea value={docAbstract} onChange={e=>setDocAbstract(e.target.value)} placeholder="Descripción objetiva, sin inferencias."/></label>
- <div className="cia-actions full"><button disabled={importBusy}>{importBusy?'Incorporando…':'Incorporar al Centro de archivo'}</button></div></form>{importStatus&&<div className="notice">{importStatus}</div>}</div>
+ <div className="cia-actions full"><button disabled={importBusy}>{importBusy?'Incorporando…':'Incorporar al Centro de archivo'}</button></div></form>{importStatus&&<div className="notice">{importStatus}</div>}</div></div>
 }
