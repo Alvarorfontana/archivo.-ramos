@@ -1,5 +1,51 @@
 # 1989 / ARCHIVE — Laboratorio de investigación histórica
 
+Caso central: Jorge Abelardo Ramos, embajador argentino en México (1989–1992), frente a John D. Negroponte, embajador de EE.UU. Contexto: Menem, Bush, Salinas, el TLC, el Cóndor II, el Yomagate y el fin de la Guerra Fría.
+
+## Estructura (rama `feat/1989-research-dashboards`, noviembre 2026)
+
+Aplicación Next.js. Funciona **sin base de datos ni claves**.
+
+| Ruta | Qué hace |
+|---|---|
+| `/` | Tapa editorial (mapa esquemático propio, sin imágenes externas que puedan caerse) |
+| `/centro` | Panel: estado de la prueba por expediente, hipótesis abiertas, documentos primarios |
+| `/centro/buscar` | Buscador federado: FRUS, NARA, Internet Archive (prensa, audio y video), Library of Congress, Wikimedia Commons, OpenAlex, Crossref, Wikidata + enlaces directos a CIA, Bush Library, Proceso, Página/12, InfoLEG, etc. |
+| `/centro/expedientes` | 7 líneas de investigación con pregunta, actores, hechos, pendientes y búsquedas listas |
+| `/centro/red` | Red de relaciones: 31 actores, 43 vínculos clasificados (documentado / contexto / hipótesis) + los vínculos que agrega el investigador |
+| `/centro/atlas` | Atlas: 10 escenarios, arcos por hecho, recorrido temporal 1981–1994 |
+| `/centro/cronologia` | 25 hechos fechados con fuente y nivel de prueba |
+| `/centro/evidencias` | Archivo de prueba del investigador (exportar / importar respaldo JSON) |
+| `/centro/informes` | Redactor: arma el informe con citas numeradas; exporta texto y PDF |
+| `/centro/fuentes` | Archivos y cómo se accede; contexto económico en vivo (Banco Mundial) |
+
+### Dónde se cargan los datos
+
+Todo el caso está en `data/caso.ts`: entidades, vínculos, lugares, hechos, fuentes y expedientes. Para sumar un hecho o un vínculo se edita ese archivo; queda versionado en GitHub. Cada registro declara su evidencia:
+
+- **documentado**: respaldado por documento primario o normativa.
+- **contexto**: hecho público del período o vínculo institucional.
+- **hipótesis**: línea abierta, no probada.
+
+El campo `verificar` marca fechas o datos que deben confirmarse con el original.
+
+### Evidencias del investigador
+
+Se guardan en el navegador (`localStorage`). Se exportan e importan como JSON desde `/centro/evidencias`. Los vínculos que se cargan al guardar una evidencia aparecen en la red en dorado y entran en los informes.
+
+### Opcionales (todos gratuitos)
+
+- `NARA_API_KEY`: activa la búsqueda en NARA. Se pide a `Catalog_API@nara.gov`.
+- `DATABASE_URL` (Neon) y `GEMINI_API_KEY`: rutas heredadas en `app/api/*` para guardado compartido y análisis con IA. No son necesarias para el centro.
+
+### Despliegue
+
+En Vercel, Root Directory `laboratorio-1989`, framework Next.js.
+
+---
+
+## Notas anteriores
+
 Módulo integrado en el repositorio Archivo Ramos, en la ruta `/laboratorio-1989/`. Esta versión reconstruye la interfaz de archivo, el directorio de protagonistas, el grafo institucional y el atlas mundial.
 
 ## Módulos disponibles en la interfaz
